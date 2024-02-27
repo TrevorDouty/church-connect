@@ -15,9 +15,12 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "apollo-boost": "^0.4.9",
+    "apollo-link-http": "^1.5.17",
     "gatsby": "^5.13.2",
     "gatsby-plugin-tailwindcss": "^1.0.3",
     "gatsby-source-graphql": "^5.13.1",
+    "isomorphic-fetch": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

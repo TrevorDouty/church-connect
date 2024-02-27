@@ -3,19 +3,30 @@
  */
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
-})
+});
+
+const fetch = require("isomorphic-fetch");
+const { createHttpLink } = require("apollo-link-http");
 
 module.exports = {
-  siteMetadata: {
-    siteUrl: `https://www.yourdomain.tld`,
-  },
-  plugins: ['gatsby-plugin-postcss', 'gatsby-plugin-tailwindcss',   {
-    resolve: "gatsby-source-graphql", // <- Configure plugin
-    options: {
-      typeName: "HASURA",
-      fieldName: "hasura", // <- fieldName under which schema will be stitched
-      url: process.env.GATSBY_HASURA_GRAPHQL_URL,
-      refetchInterval: 10 // Refresh every 10 seconds for new data
-    }
-  }],
-}
+  plugins: [
+    "gatsby-plugin-postcss",
+    "gatsby-plugin-tailwindcss",
+    {
+      resolve: "gatsby-source-graphql", // <- Configure plugin
+      options: {
+        typeName: "hasura",
+        fieldName: "cms", // <- fieldName under which schema will be stitched
+        createLink: (pluginOptions) => {
+          return createHttpLink({
+            uri: `${process.env.GATSBY_HASURA_GRAPHQL_URL}`,
+            headers: {
+              "x-hasura-admin-secret": process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+            },
+            fetch,
+          });
+        },
+      },
+    },
+  ],
+};
