@@ -1,15 +1,17 @@
 import React from "react";
 import AttendanceCard from "../components/attendance-card";
-import { graphql } from "gatsby";
+import { graphql, useStaticQuery } from "gatsby";
 
-export default function HomePage({ data }) {
+export default function HomePage() {
+  const data = useStaticQuery(HomePageQuery);
+  const users = data.cms.User;
   console.log("data", data);
   return (
     <main class="container mx-auto">
       <div class="grid grid-cols-4 gap-4 pt-10 justify-items-center">
         <div class="card w-80 bg-secondary shadow-xl">
           <div class="card-body">
-            <h2 class="card-title">{data}</h2>
+            <h2 class="card-title"></h2>
           </div>
         </div>
         <div class="card w-80 bg-secondary shadow-xl">
@@ -115,12 +117,70 @@ export default function HomePage({ data }) {
   );
 }
 
-export const HomeQuery = graphql`
+export const HomePageQuery = graphql`
   query MyQuery {
     cms {
-      User {
+      User(where: { id: { _eq: "275b4db5-3a32-4780-8a60-95271afac4f1" } }) {
+        id
+        Address1
+        Address2
+        city
+        country
+        state
+        isActive
+        isLeader
+        isChurchAdmin
+        isGroupsAdmin
+        isCurriculumAdmin
         firstName
         lastName
+        phone
+        email
+        zipCode
+        churchId
+      }
+      church_aggregate {
+        nodes {
+          address1
+          address2
+          churchImg
+          city
+          country
+          groups {
+            canViewUsers
+            churchId
+            curriculumId
+            groupImg
+            groupName
+            groupVideo
+            id
+            isPublic
+            meetingDays
+            meetingLocation
+            meetingTime
+          }
+          id
+          isActive
+          name
+          phone
+          state
+          updated_at
+          websiteUrl
+          zipcode
+        }
+      }
+      groups {
+        meetingTime
+        meetingLocation
+        meetingDays
+        isPublic
+        id
+        groupVideo
+        groupName
+        groupImg
+        curriculumId
+        churchId
+        canViewUsers
       }
     }
   }

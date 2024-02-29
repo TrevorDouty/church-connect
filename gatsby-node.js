@@ -1,53 +1,32 @@
-// exports.createPages = async ({ actions: { createPage }, graphql }) => {
-//   const result = await graphql(`
-//     {
-//       cms {
-//         User {
-//           Address1
-//           Address2
-//           church {
-//             address1
-//             churchImg
-//             city
-//             country
-//             groups {
-//               groupImg
-//               groupName
-//               isPublic
-//               meetingDays
-//               meetingLocation
-//               meetingTime
-//             }
-//             isActive
-//             name
-//             phone
-//             state
-//             websiteUrl
-//             zipcode
-//           }
-//           city
-//           country
-//           state
-//           isActive
-//           isLeader
-//           isChurchAdmin
-//           isGroupsAdmin
-//           isCurriculumAdmin
-//           firstName
-//           lastName
-//           phone
-//           email
-//           zipCode
-//         }
-//       }
-//     }
-//   `);
-//   const users = result.cms.User;
-//   console.log("users", users);
-//   users.forEach(user => {
-//     createPage({
-//       path: `/user/${user.id}`
+const path = require("path");
 
-//     })
-//   })
-// };
+exports.createPages = async ({ graphql, actions }) => {
+  const { createPage } = actions;
+
+  // Query for user data
+  const result = await graphql(`
+    query {
+      cms {
+        User {
+          id
+        }
+      }
+    }
+  `);
+
+  // Error handling
+  if (result.errors) {
+    throw result.errors;
+  }
+
+  // Create pages for each user
+  result.data.cms.User.forEach((user) => {
+    createPage({
+      path: `/users/${user.id}`, // Define the path for the page
+      component: path.resolve("./src/templates/user.js"), // Specify the template component
+      context: {
+        userId: user.id, // Pass any additional data as context
+      },
+    });
+  });
+};
