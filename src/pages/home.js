@@ -4,7 +4,10 @@ import { graphql, useStaticQuery } from "gatsby";
 
 export default function HomePage() {
   const data = useStaticQuery(HomePageQuery);
-  const users = data.cms.User;
+  const user = data.cms.User[0];
+  const church = data.cms.church_aggregate.nodes[0];
+  const groups = data.cms.groups;
+
   console.log("data", data);
   return (
     <main class="container mx-auto">
@@ -90,17 +93,22 @@ export default function HomePage() {
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4 pt-10">
-        <div>
-          <div class="collapse bg-base-200 collapse-arrow h-15">
-            <input type="checkbox" class="peer" />
-            <div class="collapse-title bg-primary text-primary-content peer-checked:bg-accent peer-checked:text-secondary-content max-h-2.5">
-              Click me to show/hide content
-            </div>
-            <div class="collapse-content bg-primary text-primary-content peer-checked:bg-accent peer-checked:text-secondary-content">
-              <AttendanceCard></AttendanceCard>
-            </div>
-          </div>
-        </div>
+        {groups.map(
+          (group) =>
+            group.isActive && (
+              <div key={group.id}>
+                <div class="collapse bg-base-200 collapse-arrow h-15">
+                  <input type="checkbox" class="peer" />
+                  <div class="collapse-title bg-primary text-primary-content peer-checked:bg-accent peer-checked:text-secondary-content max-h-2.5">
+                    {group.groupName}
+                  </div>
+                  <div class="collapse-content bg-primary text-primary-content peer-checked:bg-accent peer-checked:text-secondary-content">
+                    <AttendanceCard group={group}></AttendanceCard>
+                  </div>
+                </div>
+              </div>
+            )
+        )}
         <div>
           <div class="collapse bg-base-200 collapse-arrow h-15">
             <input type="checkbox" class="peer" />
